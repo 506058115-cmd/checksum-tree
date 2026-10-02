@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create or verify a portable SHA-256 manifest for a directory tree."""
+"""Create or verify a SHA-256 manifest for a directory tree."""
 
 import argparse
 import hashlib
@@ -110,7 +110,9 @@ def create(args):
 
 
 def safe_relative_path(value):
-    if not value or "\\" in value or ":" in value:
+    if not isinstance(value, str) or not value:
+        return None
+    if os.name == "nt" and ("\\" in value or ":" in value):
         return None
     relative = PurePosixPath(value)
     if relative.is_absolute() or str(relative) != value or ".." in relative.parts:
